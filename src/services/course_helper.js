@@ -56,7 +56,7 @@ export function printProgress(step, step_videos){
     console.log(
         `Видео ` +  
         `${step_videos}/${minutes_arr.length}: ` + `'${names_arr[step_videos - 1]}' ` +
-        `${helperProgress(minutes_arr, step_videos)}`
+        `${helperProgress(minutes_arr, step_videos - 1)}`
     )
 }
 
