@@ -1,11 +1,15 @@
 
 import { ChildProcess } from 'child_process'
 import http from 'http'
-import express from 'express'
+import express, {Request, Response, NextFunction} from 'express'
 import { appendFile } from 'fs'
 import { printProgress } from './src/services/course_helper.js'
 import { userRouter } from './users/users.js'
+import { MapLocation } from './src/education/class.js'
 
+new MapLocation(0, 1)
+
+console.log()
 const host = '127.0.0.1'
 const port = 8000
 const app = express()
@@ -88,15 +92,17 @@ app.post('/hello', (req, res) => {
 
 
 console.log()
-printProgress(9, 7)
-console.log()
+printProgress(10, 11)
+
+console.log('asd')
 // for (let i = 0; i <= task.length; i++) {    
 //     console.log(helperProgress(task, i))
 // }
 
+// asdsd
 
 // Обработка ошибок 
-app.use((err, req, res, next) => {
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     console.log(err.message)
     res.status(500).send(err.message)
 })

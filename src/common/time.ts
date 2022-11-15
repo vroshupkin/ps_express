@@ -1,8 +1,8 @@
 const formats = ['mm.ss', 'ss', 'hh.mmss', 'hh.mm']
 
 export class Minute{
-    #sec
-    #min
+    #sec: number
+    #min: number
     
     get sec(){
         return this.#sec
@@ -12,38 +12,47 @@ export class Minute{
         return this.#min
     }
 
-    constructor(val, format='mm.ss'){
+    constructor(val: number | string, format='mm.ss'){
         if('mm.ss'){
             this.convert(val)
         }
     }
 
-    convert(val){
-        
-        let [min, sec] = (val + '').split('.')
+    convert(val: number | string){
+        let min: number | string
+        let sec: number | string
+
+        [min, sec] = (val + '').split('.')
         if(sec === undefined)
             sec = '00'
 
         const sign = `${val}[0]` === '-'? -1 : 1;
                 
         if(sec.length === 1)
-            sec *= 10
+            sec = Number(sec) * 10
         
         this.#min = sign * Number(min)
         this.#sec = sign * Number(sec)
     }
 
-    static add(a, b){
-        if(typeof a === 'string' || 'number' && typeof b === 'string' || 'number'){
-            a = new Minute(a)
-            b = new Minute(b)
-        }
+    static add(
+        a: Minute | string | number,
+        b: Minute | string | number
+    ): Minute
 
-        const min = a.min + b.min + Math.floor((a.sec + b.sec) / 60)
-        const sec = (a.sec + b.sec) % 60
+
+    static add(a: any, b: any): Minute{
+        let m_a, m_b: Minute
+
+        m_a = (typeof b === 'string' || 'number')? new Minute(a) : a
+        m_b = (typeof b === 'string' || 'number')? new Minute(b) : b
+        
+        const min = m_a.min + m_b.min + Math.floor((m_a.sec + m_b.sec) / 60)
+        const sec = (m_a.sec + m_b.sec) % 60
         
         return new Minute(`${min}.${sec}`)        
     }
+
 
     toString(){
         return `${this.#min}.${this.#sec}`
@@ -70,7 +79,5 @@ function test(){
 
 }
 
-// console.log(range(10))
 
 
-// test()
