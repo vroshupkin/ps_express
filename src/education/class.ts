@@ -54,7 +54,9 @@ class MyClass<T>{
 
 const b = new MyClass<string>()
 
-
+/**
+ * Абстрактные классы и методы
+ */
 abstract class Base{
     print(s: string){
         console.log(s)
@@ -73,6 +75,9 @@ class BaseExtended extends Base {
 
 new BaseExtended()
 
+/* 
+    
+*/ 
 
 // const point = new Coord(0, 1)
 // const p2 = new MapLocation(0, 1)
