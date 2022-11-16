@@ -24,7 +24,7 @@ const app = express()
  */
 
 // Срабатывает в свою очередь при любом запросе
-app.use((req, res, next) => {
+app.use((req: Request, res: Response, next: NextFunction) => {
     const dateNow = new Date(Date.now()) + ''
     console.log('Время',  dateNow.slice(16, 15+9))
     
@@ -32,7 +32,7 @@ app.use((req, res, next) => {
 })
 
 // Вызывается при любом методе
-app.get('/example', (req, res, next) => {
+app.get('/example', (req: Request, res: Response, next: NextFunction) => {
     /* Скачивание */
     // res.download('./package.json', 'hello.json')
 
@@ -80,18 +80,18 @@ app.use('/users', userRouter)
 
 
 
-app.get('/hello', (req, res) => {
+app.get('/hello', (req: Request, res: Response, next: NextFunction) => {
     res.end()
 })
 
-app.post('/hello', (req, res) => {
+app.post('/hello', (req: Request, res: Response, next: NextFunction) => {
     throw new Error('new error')
 })
 
 
 
 
-console.log()Ю
+console.log()
 printProgress(10, 11)
 
 console.log('asd')
