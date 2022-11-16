@@ -65,6 +65,8 @@ const node_js_course: ICourseMainObject = {
     }
 }
 
+
+
 node_js_course[10] = {
     name: 'Переход на TypeScript',
     videos: {
@@ -114,6 +116,46 @@ node_js_course[10] = {
         },
     }
 }
+
+
+convertObjectToArrCourse()
+
+
+  
+  
+const step_1_name: TCourseNameTuple = [ 1, 'Почему NodeJS для backend?' ]
+const step_1: TCourseVideosTuple[] = [
+    [ 1, 'Почему NodeJS для backend?', 11.34 ]
+]
+
+
+
+
+const step_9_name: TCourseNameTuple = [ 9, 'Приложение 2 - API с ExpressJS' ]
+const step_9: TCourseVideosTuple[] = [
+    [ 1, 'Вводное видео', 1.59 ],
+  [ 2, 'Простой http сервер', 9.18 ],
+  [ 3, 'Переходим на express', 4.2 ],
+  [ 4, 'Марщрутизация', 10.27 ],
+  [ 5, 'Ответы клиенту', 9.36 ],
+  [ 6, 'Router', 5.32 ],
+  [ 7, 'Промежуточные обработчики', 9.15 ]
+]
+
+const step_10_name: TCourseNameTuple = [ 10, 'Переход на TypeScript' ]
+const step_10: TCourseVideosTuple[] = [
+    [ 1, 'Дополнительный курс по TypeScript', 1.31 ],
+    [ 2, 'Почему TypeScript', 5.51 ],
+    [ 3, 'Начало работы с TypeScript', 18.18 ],
+    [ 4, 'Базовые типы', 12.21 ],
+    [ 5, 'Union типы', 6.05 ],
+    [ 6, 'Interfaces и Types', 10.13 ],
+    [ 7, 'Литеральные типы', 10.39 ],
+    [ 8, 'Enum', 8.03 ],
+    [ 9, 'Generics', 9.11 ],
+    [ 10, 'Классы', 26.08 ],
+    [ 11, 'Другие типы и возможности', 6.02 ]
+]
 
 const step_11_name: TCourseNameTuple = [11, 'Первый шаг к архитектуре']
 const step_11: TCourseVideosTuple[] = [
@@ -185,6 +227,35 @@ const step_18: TCourseVideosTuple[] = [
 ]
 
 
+/**
+ * Превращает объект TCourseNameTuple и TCourseVideosTuple
+ */
+function convertObjectToArrCourse() {
+    const steps_name: TCourseNameTuple[] = []
+    for (const course_id of Object.keys(node_js_course)) {
+        const course_id_num = Number(course_id)
+
+        steps_name.push([
+            Number(course_id),
+            node_js_course[course_id_num].name
+        ])
+
+        const videos = []
+        for (const videosId of Object.keys(node_js_course[course_id_num].videos)) {
+            const videosId_num = Number(videosId)
+            const video = node_js_course[course_id_num].videos[videosId_num]
+
+            videos.push([
+                videosId_num, video.name, video.time
+            ])
+        }
+
+        // console.log(videos)
+        // console.log(steps_name)
+
+    }
+}
+
 function addNewCourse(main_obj: ICourseMainObject, courseNameTuple: TCourseNameTuple, step_arr: TCourseVideosTuple[]){
     const [course_order, course_name] = courseNameTuple
     main_obj[course_order] = {
@@ -201,56 +272,105 @@ function addNewCourse(main_obj: ICourseMainObject, courseNameTuple: TCourseNameT
     }
 }
 
+/**
+ * Хранит ступень курса
+ * 1) Название и длительность всех видео ступеней
+ * 2) Название курса и его длительность
+ */
 class CourseStep{
+    
     #durationCourse: Minute
     #courseName: string
     #courseOrder: number
-
+    #videos: {[_: number]: IVideos}
 
     constructor(course_order: number, course_name: string, course_videos: TCourseVideosTuple[]) {
         this.#courseName = course_name
         this.#courseOrder = course_order
         this.#durationCourse = new Minute(0)
+        this.#videos = []
 
         for (const videosData of course_videos) {
             const [order, video_name, time] = videosData
-            this.#durationCourse = Minute.add(this.#durationCourse, time)
-        }
+            
+            this.#videos[order] = {
+                name: video_name,
+                time: time
+            }
 
-        
-        console.log(`${this.#courseOrder} ${this.#courseName}: ${this.#durationCourse} мин`)
-        
+            this.#durationCourse = Minute.add(this.#durationCourse, time)
+        }    
+
     }
 
     get durationCourse(){
         return this.#durationCourse
     }
+
+    logCourse(){
+        console.log(`${this.#courseOrder} ${this.#courseName}: ${this.#durationCourse} мин`)
+
+        // for (const videoKey of Object.keys(this.#videos)) {
+        //     console.log(this.#videos[Number(videoKey)])
+        // }
+    }
 }
 
-const steps = [step_11, step_12, step_13, step_14, step_15, step_16, step_17, step_18]
-const steps_name = [step_11_name, step_12_name, step_13_name, step_14_name, step_15_name, step_16_name, step_17_name, step_18_name]
+const steps = [step_1, step_9, step_10, step_11, step_12, step_13, step_14, step_15, step_16, step_17, step_18]
+const steps_name = [step_1_name, step_9_name, step_10_name, step_11_name, step_12_name, step_13_name, step_14_name, step_15_name, step_16_name, step_17_name, step_18_name]
 
+class AgregatorCourseStep{
+    #totalTime: Minute
+    #courses: CourseStep[]
 
-let totalDuration = new Minute(0)
-for (let i = 0; i < steps.length; i++) {
-    addNewCourse(node_js_course, steps_name[i], steps[i])
+    constructor(courses: CourseStep[]){
+        this.#totalTime = new Minute(0)
+        this.#courses = []
 
-    const course = new CourseStep(steps_name[i][0], steps_name[i][1], steps[i])
-    totalDuration = Minute.add(totalDuration, course.durationCourse)
+        for (const course of courses) {
+            this.#courses.push(course)
+        }
+
+    }
+
+    get totalTime(){
+        for (const course of this.#courses) {
+            this.#totalTime = Minute.add(this.#totalTime, course.durationCourse)
+        }
+        return this.#totalTime
+    }
 }
 
-console.log(totalDuration + '')
 
-// addNewCourse(node_js_course, step_11_name, step_11)
-// addNewCourse(node_js_course, step_12_name, step_12)
-// addNewCourse(node_js_course, step_13_name, step_13)
-// addNewCourse(node_js_course, step_14_name, step_14)
-// addNewCourse(node_js_course, step_15_name, step_15)
-// addNewCourse(node_js_course, step_16_name, step_16)
-// addNewCourse(node_js_course, step_17_name, step_17)
-// addNewCourse(node_js_course, step_18_name, step_18)
 
-// console.log(node_js_course)
+
+function FactoryCourses() {
+    let courses: CourseStep[] = []
+    for (let i = 0; i < steps.length; i++) {
+        const course = new CourseStep(steps_name[i][0], steps_name[i][1], steps[i])
+        courses.push(course)
+    }
+    return courses
+}
+
+let courses: CourseStep[] = FactoryCourses()
+const PurpleSchool_NodeJS = new AgregatorCourseStep(courses)
+// console.log(PurpleSchool_NodeJS.totalTime + '')
+
+
+function getTotatalDurationCourse() {
+    let totalDuration = new Minute(0)
+    for (let i = 0; i < steps.length; i++) {
+        addNewCourse(node_js_course, steps_name[i], steps[i])
+
+        const course = new CourseStep(steps_name[i][0], steps_name[i][1], steps[i])
+        totalDuration = Minute.add(totalDuration, course.durationCourse)
+    }
+
+    console.log(totalDuration + '')
+}
+
+getTotatalDurationCourse()
 
 /**
  * Выводит в консоль прогресс курса в процентах от ступени
@@ -271,6 +391,11 @@ export function printProgress(step: number, step_videos: number){
 }
 
 
+/**
+ * @param task Массив видео данной ступени [мин]
+ * @param complete_ind Индекс текущего видео
+ * @returns Процент выполнения данной ступени
+ */
 export const helperProgress = (task: number[], complete_ind: number) => {
     const taskMinute = task.map(v => new Minute(v))
 
