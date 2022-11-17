@@ -31,11 +31,16 @@ export abstract class BaseController{
 
 
     protected bindRoutes(routes: IControllerRoute[]){
+        
+        let log_str: string = ''
         for (const route of routes) {
-            this.logger.log(`[${route.method}] ${route.path}`)
             const handler = route.func.bind(this)
-
             this.router[route.method](route.path, handler)
+
+            log_str += `${route.method} ${route.path}\n`
         }
+
+        this.logger.log('Создан контроллер с путями:')
+        console.log(log_str)
     }
 }

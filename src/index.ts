@@ -2,7 +2,6 @@
 import express, {Request, Response, NextFunction} from 'express'
 // import { appendFile } from 'fs'
 import { printProgress } from './services/course_helper.js'
-import { userRouter } from './users/users.js'
 import { MapLocation } from './education/class.js'
 
 
@@ -74,7 +73,7 @@ app.get('/example', (req: Request, res: Response, next: NextFunction) => {
 
 
 
-app.use('/users', userRouter) 
+// app.use('/users', userRouter) 
 
 
 
