@@ -1,11 +1,10 @@
 
-import { ChildProcess } from 'child_process'
-import http from 'http'
 import express, {Request, Response, NextFunction} from 'express'
-import { appendFile } from 'fs'
-import { printProgress } from './src/services/course_helper.js'
+// import { appendFile } from 'fs'
+import { printProgress } from './services/course_helper.js'
 import { userRouter } from './users/users.js'
-import { MapLocation } from './src/education/class.js'
+import { MapLocation } from './education/class.js'
+
 
 new MapLocation(0, 1)
 
@@ -92,7 +91,7 @@ app.post('/hello', (req: Request, res: Response, next: NextFunction) => {
 
 
 console.log()
-printProgress(10, 11)
+printProgress(11, 1)
 
 console.log('asd')
 // for (let i = 0; i <= task.length; i++) {    

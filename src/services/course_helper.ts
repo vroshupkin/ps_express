@@ -343,7 +343,6 @@ class AgregatorCourseStep{
 
 
 
-
 function FactoryCourses() {
     let courses: CourseStep[] = []
     for (let i = 0; i < steps.length; i++) {
@@ -374,7 +373,7 @@ getTotatalDurationCourse()
 
 /**
  * Выводит в консоль прогресс курса в процентах от ступени
- * @param step Порядковый номер текущего курса
+ * @param step Порядковый номер текущей ступени
  * @param step_videos Текущее видео
  */
 export function printProgress(step: number, step_videos: number){
