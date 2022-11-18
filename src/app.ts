@@ -1,24 +1,30 @@
 import express, { Express } from "express"
 // import { userRouter } from "./users/users";
 import { Server } from 'node:http'
-import { LoggerSevice } from "./logger/logger.service.js";
+import { LoggerSevice as ILogger } from "./logger/logger.service.js";
 import { UserController } from "./users/users.controller";
 import { BaseController } from "./common/base.controller";
+import { ExeptionFilter } from "./errors/exeption.filter.js";
 
 export class App{
     app: Express
     server: Server
     port: number;
-    logger: LoggerSevice
+    logger: ILogger
     // userController: BaseController
     controllers: BaseController[]
+    exeptionFilter: ExeptionFilter
 
-    constructor(logger: LoggerSevice) {
+    constructor(
+        logger: ILogger,
+        exeptionFilter: ExeptionFilter
+    ) {
         this.app = express()
         this.port = 8000
         this.logger = logger
 
         // this.userController = new UserController(new LoggerSevice())
+        this.exeptionFilter = exeptionFilter
         this.controllers = []
     }
 
@@ -29,6 +35,7 @@ export class App{
 
     public async init(){
         this.useRoutes()
+        this.useExceptionFilters()
         this.server = this.app.listen(this.port)
         console.log(`Сервер запущен localhost:${this.port}`)
 
@@ -48,6 +55,10 @@ export class App{
 
     removeController(){
         console.error('TODO!!!')
+    }
+
+    useExceptionFilters(){
+        this.app.use(this.exeptionFilter.catch.bind(this.exeptionFilter))
     }
 
 }

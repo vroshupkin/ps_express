@@ -363,10 +363,11 @@ function getTotatalDurationCourse() {
         addNewCourse(node_js_course, steps_name[i], steps[i])
 
         const course = new CourseStep(steps_name[i][0], steps_name[i][1], steps[i])
+        console.log(i + 8, course.durationCourse.toString())
         totalDuration = Minute.add(totalDuration, course.durationCourse)
     }
 
-    console.log(totalDuration + '')
+    console.log(totalDuration.toString())
 }
 
 getTotatalDurationCourse()

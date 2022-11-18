@@ -1,11 +1,12 @@
 import { Logger } from 'tslog'
+import { ILogger } from './logger.interface';
 
 
 interface defaultLogObject{
     
 }
 
-export class LoggerSevice {
+export class LoggerSevice implements ILogger {
     public logger: Logger<defaultLogObject>
 
     constructor(){
@@ -14,11 +15,11 @@ export class LoggerSevice {
     }
 
     error(...args: unknown[]){
-        this.logger.error(args, { bar: true });
+        this.logger.error(args);
     }
 
     warn(...args: unknown[]){
-        this.logger.warn(args, { bar: true });
+        this.logger.warn(args);
     }
     log(...args: unknown[]){
         this.logger.info(args);
