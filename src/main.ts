@@ -5,6 +5,7 @@ import { Minute } from "./common/time.js";
 import { application } from "express";
 import { UserController } from "./users/users.controller.js";
 import { ExeptionFilter } from "./errors/exeption.filter.js";
+import { User } from "./education/decorators.js";
 
 
 async function bootstrap() {
@@ -29,6 +30,13 @@ const current_video = 2
 const remainCourseTime = PurpleSchool_NodeJS.remainTimeOfCourses(current_step)
 printProgress(current_step, current_video)
 
-console.log('Оставшееся время курсова ' + remainCourseTime)
+console.log('Оставшееся время курсов ' + remainCourseTime)
 
 
+
+
+console.log(new User().id)
+console.log('asd')
+// new User()
+// new User()
+// console.log(new User().id)
