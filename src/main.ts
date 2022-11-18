@@ -1,5 +1,5 @@
 import { App } from "./app.js";
-import { printProgress } from "./services/course_helper.js";
+import { printProgress, PurpleSchool_NodeJS } from "./services/course_helper.js";
 import { LoggerSevice } from './logger/logger.service.js'
 import { Minute } from "./common/time.js";
 import { application } from "express";
@@ -17,13 +17,18 @@ async function bootstrap() {
 
     await app.init();
 
-    const progress_debug = [44.24, 37.58].reduce((prev, curr) => Minute.add(prev, curr), new Minute(0))
+    const progress_debug = [21.53, 16.57].reduce((prev, curr) => Minute.add(prev, curr), new Minute(0))
 
     app.logger.log(progress_debug + '')
 }
 
 bootstrap()
 
-printProgress(11, 5)
+const current_step = 12
+const current_video = 2
+const remainCourseTime = PurpleSchool_NodeJS.remainTimeOfCourses(current_step)
+printProgress(current_step, current_video)
+
+console.log('Оставшееся время курсова ' + remainCourseTime)
 
 

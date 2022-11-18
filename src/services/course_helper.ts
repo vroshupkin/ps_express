@@ -277,14 +277,16 @@ function addNewCourse(main_obj: ICourseMainObject, courseNameTuple: TCourseNameT
  * 1) Название и длительность всех видео ступеней
  * 2) Название курса и его длительность
  */
+
 class CourseStep{
-    
+
     #durationCourse: Minute
     #courseName: string
     #courseOrder: number
     #videos: {[_: number]: IVideos}
 
     constructor(course_order: number, course_name: string, course_videos: TCourseVideosTuple[]) {
+        
         this.#courseName = course_name
         this.#courseOrder = course_order
         this.#durationCourse = new Minute(0)
@@ -303,9 +305,15 @@ class CourseStep{
 
     }
 
-    get durationCourse(){
+    get durationCourse(): Minute{
         return this.#durationCourse
     }
+
+    
+    public get courseOrder(): number {
+        return this.#courseOrder
+    }
+    
 
     logCourse(){
         console.log(`${this.#courseOrder} ${this.#courseName}: ${this.#durationCourse} мин`)
@@ -314,6 +322,8 @@ class CourseStep{
         //     console.log(this.#videos[Number(videoKey)])
         // }
     }
+    
+    
 }
 
 const steps = [step_1, step_9, step_10, step_11, step_12, step_13, step_14, step_15, step_16, step_17, step_18]
@@ -339,6 +349,21 @@ class AgregatorCourseStep{
         }
         return this.#totalTime
     }
+
+    /**
+     * @param course_step Ступень курса
+     * @returns Время оставшееся на изучение текущей ступени и последующих
+     */
+    remainTimeOfCourses(course_step: number): Minute{
+        let remain_time = new Minute(0)
+        for (const courseStep of this.#courses) {
+            if(courseStep.courseOrder >= course_step)
+                remain_time = Minute.add(remain_time, courseStep.durationCourse)
+            
+        }
+
+        return remain_time
+    }
 }
 
 
@@ -353,7 +378,9 @@ function FactoryCourses() {
 }
 
 let courses: CourseStep[] = FactoryCourses()
-const PurpleSchool_NodeJS = new AgregatorCourseStep(courses)
+export const PurpleSchool_NodeJS = new AgregatorCourseStep(courses)
+
+
 // console.log(PurpleSchool_NodeJS.totalTime + '')
 
 
