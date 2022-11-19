@@ -31,9 +31,9 @@ export class C{
 
 }
 
-@Injectable('D')
-export class D{
-    constructor(@Inject('C') c: C){
+// @Injectable('D')
+// export class D{
+//     constructor(@Inject('C') c: C){
 
-    }
-}
+//     }
+// }

@@ -3,6 +3,7 @@ import express, {Request, Response, NextFunction} from 'express'
 // import { appendFile } from 'fs'
 import { printProgress } from './services/course_helper.js'
 import { MapLocation } from './education/class.js'
+import 'reflect-metadata'
 
 
 new MapLocation(0, 1)
