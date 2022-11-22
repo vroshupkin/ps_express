@@ -22,7 +22,10 @@ export class UserController extends BaseController implements IUserController {
 
 	login(req: Request, res: Response, next: NextFunction): void {
 		next(new HTTPError(401, 'ошибка авторизации'));
-		// this.send(res, 200, 'login')
+
+		console.log('hello debugger');
+
+		console.log('end');
 	}
 
 	register(req: Request, res: Response, next: NextFunction): void {

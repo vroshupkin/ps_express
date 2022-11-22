@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 class Coord {
 	lat: number;
 	long: number;
@@ -7,7 +8,7 @@ class Coord {
 		this.long = long;
 	}
 
-	computeDistance(newLat: number, newLong: number) {
+	computeDistance(newLat: number, newLong: number): number {
 		return 0;
 	}
 }
@@ -17,7 +18,7 @@ class Coord {
 export class MapLocation extends Coord {
 	_name: string;
 
-	get name() {
+	get name(): string {
 		return this._name;
 	}
 

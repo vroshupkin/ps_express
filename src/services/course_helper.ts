@@ -431,5 +431,3 @@ export const helperProgress = (task: number[], complete_ind: number): string => 
 
 	return Math.floor(100 * (completeSumInSeconds / sumInSeconds)) + '%';
 };
-
-console.log('hello');
