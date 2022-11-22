@@ -1,4 +1,4 @@
-import 'reflect-metadata'
+import 'reflect-metadata';
 
 // function Inject(key: string) {
 //     return (target: Function) => {
@@ -10,25 +10,20 @@ import 'reflect-metadata'
 // }
 
 function Injectable(key: string) {
-    return (target: Function) => {
-        Reflect.defineMetadata(key, 1, target)
+	return (target: Function): void => {
+		Reflect.defineMetadata(key, 1, target);
 
-        const meta = Reflect.getMetadata(key, target)
-        console.log(meta)
-    }
+		const meta = Reflect.getMetadata(key, target);
+		console.log(meta);
+	};
 }
 
-function Prop(
-    target:{},
-    name: string
-    ) {
-    
-}
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+function Prop(target: {}, name: string): void {}
 
 @Injectable('C')
-export class C{
-    @Prop prop: number
-
+export class C {
+	@Prop prop: number;
 }
 
 // @Injectable('D')

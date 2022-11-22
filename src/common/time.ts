@@ -1,83 +1,70 @@
-const formats = ['mm.ss', 'ss', 'hh.mmss', 'hh.mm']
+const formats = ['mm.ss', 'ss', 'hh.mmss', 'hh.mm'];
 
-export class Minute{
-    #sec: number
-    #min: number
-    
-    get sec(){
-        return this.#sec
-    }
+export class Minute {
+	#sec: number;
+	#min: number;
 
-    get min(){
-        return this.#min
-    }
+	get sec(): number {
+		return this.#sec;
+	}
 
-    constructor(val: number | string, format='mm.ss'){
-        if('mm.ss'){
-            this.convert(val)
-        }
-    }
+	get min(): number {
+		return this.#min;
+	}
 
-    convert(val: number | string){
-        let min: number | string
-        let sec: number | string
+	constructor(val: number | string | Minute, format = 'mm.ss') {
+		if (val instanceof Minute) return val;
 
-        [min, sec] = (val + '').split('.')
-        if(sec === undefined)
-            sec = '00'
+		if (format === 'mm.ss') {
+			this.convert(val);
+		}
+	}
 
-        const sign = `${val}[0]` === '-'? -1 : 1;
-                
-        if(sec.length === 1)
-            sec = Number(sec) * 10
-        
-        this.#min = sign * Number(min)
-        this.#sec = sign * Number(sec)
-    }
+	convert(val: number | string): void {
+		let min: number | string;
+		let sec: number | string;
 
-    static add(
-        a: Minute | string | number,
-        b: Minute | string | number
-    ): Minute
+		// eslint-disable-next-line prefer-const
+		[min, sec] = (val + '').split('.');
+		if (sec === undefined) sec = '00';
 
+		const sign = `${val}[0]` === '-' ? -1 : 1;
 
-    static add(a: any, b: any): Minute{
-        let m_a, m_b: Minute
+		if (sec.length === 1) sec = Number(sec) * 10;
 
-        m_a = (typeof b === 'string' || 'number')? new Minute(a) : a
-        m_b = (typeof b === 'string' || 'number')? new Minute(b) : b
-        
-        const min = m_a.min + m_b.min + Math.floor((m_a.sec + m_b.sec) / 60)
-        const sec = (m_a.sec + m_b.sec) % 60
-        
-        return new Minute(`${min}.${sec}`)        
-    }
+		this.#min = sign * Number(min);
+		this.#sec = sign * Number(sec);
+	}
 
+	// static add(a: Minute | string | number, b: Minute | string | number): Minute;
 
-    toString(){
-        return `${this.#min}.${this.#sec}`
-    }
+	static add(a: Minute | string | number, b: Minute | string | number): Minute {
+		a = new Minute(a);
+		b = new Minute(b);
+
+		const min = a.min + b.min + Math.floor((a.sec + b.sec) / 60);
+		const sec = (a.sec + b.sec) % 60;
+
+		return new Minute(`${min}.${sec}`);
+	}
+
+	toString(): string {
+		return `${this.#min}.${this.#sec}`;
+	}
 }
 
+function test(): any {
+	const t_2 = Minute.add(70.59, -0.59);
 
-function test(){
-    const t_2 = Minute.add(70.59, -0.59)
+	console.log(new Minute(0) + '');
+	for (const decade of [0, 1, 2, 3, 4, 5]) {
+		for (const digit of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]) {
+			const minute_str = `${decade}${digit}`;
+			// console.log(new Minute(minute_str) + '')
+			// console.log(new Minute('-' + minute_str) + '')
+		}
+	}
 
-    console.log(new Minute(0) + '')
-    for (const decade of [0, 1, 2, 3, 4, 5]) {
-        for (const digit of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]) {
-
-            const minute_str = `${decade}${digit}`
-            // console.log(new Minute(minute_str) + '')
-            // console.log(new Minute('-' + minute_str) + '')
-        }
-        
-    }
-
-    // console.log(new Minute('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'))
-    // console.log(t_2 + '')
-
+	// console.log(new Minute('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'))
+	// console.log(t_2 + '')
 }
-
-
-

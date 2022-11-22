@@ -1,33 +1,27 @@
-import { Logger } from 'tslog'
+import { Logger } from 'tslog';
 import { ILogger } from './logger.interface';
-import { injectable } from 'inversify'
-import 'reflect-metadata'
+import { injectable } from 'inversify';
+import 'reflect-metadata';
 
-interface defaultLogObject{
-    
-}
+type defaultLogObject = {};
 
 @injectable()
 export class LoggerSevice implements ILogger {
-    public logger: Logger<defaultLogObject>
+	public logger: Logger<defaultLogObject>;
 
-    constructor(){
-        const prettyLogTemplate =  "{{logLevelName}} {{yyyy}}-{{mm}}-{{dd}} {{hh}}:{{MM}}:{{ss}}"
-        this.logger = new Logger({type: 'pretty', prettyLogTemplate: prettyLogTemplate})
-    }
+	constructor() {
+		const prettyLogTemplate = '{{logLevelName}} {{yyyy}}-{{mm}}-{{dd}} {{hh}}:{{MM}}:{{ss}}';
+		this.logger = new Logger({ type: 'pretty', prettyLogTemplate: prettyLogTemplate });
+	}
 
-    error(...args: unknown[]){
-        this.logger.error(args);
-    }
+	error(...args: unknown[]): void {
+		this.logger.error(args);
+	}
 
-    warn(...args: unknown[]){
-        this.logger.warn(args);
-    }
-    log(...args: unknown[]){
-        this.logger.info(args);
-
-        
-    }
-
+	warn(...args: unknown[]): void {
+		this.logger.warn(args);
+	}
+	log(...args: unknown[]): void {
+		this.logger.info(args);
+	}
 }
-
