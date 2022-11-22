@@ -2,8 +2,8 @@ import express, { Express } from 'express';
 // import { userRouter } from "./users/users";
 import { Server } from 'node:http';
 import { LoggerSevice as ILogger } from './logger/logger.service.js';
-import { UserController } from './users/users.controller';
-import { BaseController } from './common/base.controller';
+import { UserController } from './users/users.controller.js';
+import { BaseController } from './common/base.controller.js';
 import { ExeptionFilter } from './errors/exeption.filter.js';
 import { inject, injectable } from 'inversify';
 import { TYPES } from './types.js';
@@ -25,7 +25,7 @@ export class App {
 		@inject(TYPES.UserController) private userController: UserController,
 	) {
 		this.app = express();
-		this.port = 8000;
+		this.port = 8001;
 
 		// this.logger = logger
 

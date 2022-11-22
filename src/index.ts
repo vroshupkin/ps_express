@@ -8,7 +8,7 @@ new MapLocation(0, 1);
 
 console.log();
 const host = '127.0.0.1';
-const port = 8000;
+const port = 8001;
 const app = express();
 
 /* 
