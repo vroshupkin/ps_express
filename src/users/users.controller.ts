@@ -9,6 +9,10 @@ import { ILogger } from '../logger/logger.interface';
 import 'reflect-metadata';
 import { IUserController } from './users.controller.interface';
 
+class User {}
+
+const users = [];
+
 @injectable()
 export class UserController extends BaseController implements IUserController {
 	constructor(@inject(TYPES.ILogger) logger: ILogger) {
@@ -26,6 +30,8 @@ export class UserController extends BaseController implements IUserController {
 		console.log('hello debugger');
 
 		console.log('end');
+
+		users.push(new User());
 	}
 
 	register(req: Request, res: Response, next: NextFunction): void {
