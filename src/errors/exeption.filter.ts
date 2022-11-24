@@ -17,6 +17,7 @@ export class ExeptionFilter implements IExeptionFilter {
 			res.status(err.statusCode).send({ err: err.message });
 		} else {
 			this.logger.error(`${err.message}`);
+			res.status(500).send({ err: err.message });
 		}
 	}
 }

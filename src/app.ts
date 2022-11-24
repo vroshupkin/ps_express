@@ -9,7 +9,7 @@ import { inject, injectable } from 'inversify';
 import { TYPES } from './types.js';
 import 'reflect-metadata';
 import body_parse from 'body-parser';
-const { json } = body_parse;
+const { json } = express;
 
 @injectable()
 export class App {
@@ -48,8 +48,10 @@ export class App {
 
 	public async init(): Promise<void> {
 		this.useMiddleware();
+
 		this.useRoutes();
 		this.useExceptionFilters();
+
 		this.server = this.app.listen(this.port);
 		console.log(`Сервер запущен localhost:${this.port}`);
 

@@ -32,6 +32,7 @@ export class UserController extends BaseController implements IUserController {
 
 	register(req: Request<{}, {}, UserRegisterDto>, res: Response, next: NextFunction): void {
 		console.log(req.body);
-		this.send(res, 200, 'register');
+		// this.send(res, 200, req.body);
+		this.ok(res, 'register');
 	}
 }
