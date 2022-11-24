@@ -6,6 +6,10 @@
 	"ignore": [
 		"src/**/*.spec.ts"
 	],
-	"exec": "ts-node-esm --files ./src/main.ts"
+	"exec": "ts-node-esm --files ./src/main.ts",
+    
+    "env": {
+        "NODE_OPTIONS":  "--experimental-specifier-resolution=node"
+    }
 }
 
