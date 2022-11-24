@@ -6,14 +6,15 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon ./dist/main.js",
+    "start": "set PATH_OPTIONS=\"--experimental-specifier-resolution=node\" && nodemon",
     "lint": "eslint ./src/**",
     "lint:fix": "eslint ./src/** --fix",
     "lint:error": "eslint ./src/** --quiet",
     "start:watch": "rm -rf ./dist && tsc-watch --onSuccess \"node --experimental-specifier-resolution=node ./dist/main.js\"",
     "build": "tsc",
     "dev": "concurrently -k \"tsc --watch \" \"nodemon  --experimental-specifier-resolution=node ./dist/main.js\"",
-    "dev:inspect": "nodemon -e ts,json --exec node --inspect=localhost:9222 --loader ts-node/esm --experimental-specifier-resolution=node ./src/main.ts"
+    "dev:inspect": "nodemon -e ts,json --exec node --inspect=localhost:9222 --loader ts-node/esm --experimental-specifier-resolution=node ./src/main.ts",
+    "doctor": "tsc && set NODE_OPTIONS=\"--experimental-specifier-resolution=node\" && npx clinic doctor --on-port 'autocannon -m POST localhost:8001/users/register' -- node  dist/main.js"
   },
   "author": "",
   "license": "ISC",
