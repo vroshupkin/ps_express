@@ -12,12 +12,15 @@ import { TYPES } from './types.js';
 import { IExeptionFilter } from './errors/exeption.filter.interface.js';
 import 'reflect-metadata';
 import { IUserController } from './users/users.controller.interface.js';
+import { IUserService } from './users/users.service.interface.js';
+import { UserService } from './users/users.service.js';
 
 /*  */
 export const appBindings_1 = new ContainerModule((bind: interfaces.Bind) => {
 	bind<ILogger>(TYPES.ILogger).to(LoggerSevice);
 	bind<IExeptionFilter>(TYPES.ExeptionFilter).to(ExeptionFilter);
 	bind<IUserController>(TYPES.UserController).to(UserController);
+	bind<IUserService>(TYPES.UserService).to(UserService);
 	bind<App>(TYPES.Application).to(App);
 });
 
@@ -60,7 +63,7 @@ const remainCourseTime = PurpleSchool_NodeJS.remainTimeOfCourses(current_step);
 
 printProgress(current_step, current_video);
 console.log('Оставшееся время курсов ' + remainCourseTime);
-const progress_debug = [9.54, 10.37, 12.46].reduce(
+const progress_debug = [9.54, 10.37, 12.46, 5.59].reduce(
 	(prev, curr) => Minute.add(prev, curr),
 	new Minute(0),
 );
