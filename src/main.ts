@@ -54,13 +54,13 @@ export const { app, appContainer } = bootstrap();
 
 // export { app, appContainer }
 
-const current_step = 12;
+const current_step = 14;
 const current_video = 2;
 const remainCourseTime = PurpleSchool_NodeJS.remainTimeOfCourses(current_step);
 
 printProgress(current_step, current_video);
 console.log('Оставшееся время курсов ' + remainCourseTime);
-const progress_debug = [21.53, 16.57, 17.05].reduce(
+const progress_debug = [9.54, 10.37, 12.46].reduce(
 	(prev, curr) => Minute.add(prev, curr),
 	new Minute(0),
 );

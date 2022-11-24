@@ -8,6 +8,8 @@ import { ExeptionFilter } from './errors/exeption.filter.js';
 import { inject, injectable } from 'inversify';
 import { TYPES } from './types.js';
 import 'reflect-metadata';
+import body_parse from 'body-parser';
+const { json } = body_parse;
 
 @injectable()
 export class App {
@@ -35,12 +37,17 @@ export class App {
 		// this.userController = userController
 	}
 
+	useMiddleware(): void {
+		this.app.use(json());
+	}
+
 	useRoutes(): void {
 		// this.app.use('/users', userRouter)
 		this.app.use('/users', this.userController.router);
 	}
 
 	public async init(): Promise<void> {
+		this.useMiddleware();
 		this.useRoutes();
 		this.useExceptionFilters();
 		this.server = this.app.listen(this.port);
