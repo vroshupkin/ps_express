@@ -10,6 +10,7 @@ import 'reflect-metadata';
 import { IUserController } from './users.controller.interface';
 import { UserLoginDto } from './dto/user-login.dto';
 import { UserRegisterDto } from './dto/user-register.dto';
+import { User } from './user.entity';
 
 @injectable()
 export class UserController extends BaseController implements IUserController {
@@ -30,9 +31,15 @@ export class UserController extends BaseController implements IUserController {
 		console.log('end');
 	}
 
-	register(req: Request<{}, {}, UserRegisterDto>, res: Response, next: NextFunction): void {
-		console.log(req.body);
-		// this.send(res, 200, req.body);
+	async register(
+		{ body }: Request<{}, {}, UserRegisterDto>,
+		res: Response,
+		next: NextFunction,
+	): Promise<void> {
+		const user = new User(body.email, body.name);
+		await user.setPasword(body.password);
+
+		// this.send(res, 200, user);
 		this.ok(res, 'register');
 	}
 }
