@@ -34,10 +34,12 @@ export abstract class BaseController {
 	protected bindRoutes(routes: IControllerRoute[]): void {
 		let log_str = '';
 		for (const route of routes) {
-			const handler = route.func.bind(this);
-			this.router[route.method](route.path, handler);
-
 			log_str += `${route.method} ${route.path}\n`;
+
+			const handler = route.func.bind(this);
+			const middleware = route.middlewares?.map((m) => m.execute.bind(m));
+			const pipeline = middleware ? [...middleware, handler] : handler;
+			this.router[route.method](route.path, pipeline);
 		}
 
 		this.logger.log('Создан контроллер с путями:');
