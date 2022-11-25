@@ -68,3 +68,9 @@ const progress_debug = [9.54, 10.37, 12.46, 5.59].reduce(
 	new Minute(0),
 );
 console.log(progress_debug + '');
+
+const rest_course = [12.47, 67.36, 42.12, 61.28, 4.3].reduce(
+	(prev, curr) => Minute.add(prev, curr),
+	new Minute(0),
+);
+console.log(Number(rest_course + ''));
