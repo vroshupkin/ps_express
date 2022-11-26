@@ -9,6 +9,10 @@ import { inject, injectable } from 'inversify';
 import { TYPES } from './types.js';
 import 'reflect-metadata';
 import body_parse from 'body-parser';
+import { ConfigService } from './config/config.service.js';
+import { IConfigService } from './config/config.service.interface.js';
+import { IUserController } from './users/users.controller.interface.js';
+import { IExeptionFilter } from './errors/exeption.filter.interface.js';
 const { json } = express;
 
 @injectable()
@@ -23,8 +27,9 @@ export class App {
 
 	constructor(
 		@inject(TYPES.ILogger) private logger: ILogger,
-		@inject(TYPES.ExeptionFilter) private exeptionFilter: ExeptionFilter,
-		@inject(TYPES.UserController) private userController: UserController,
+		@inject(TYPES.ExeptionFilter) private exeptionFilter: IExeptionFilter,
+		@inject(TYPES.UserController) private userController: IUserController,
+		@inject(TYPES.ConfigService) private configService: IConfigService,
 	) {
 		this.app = express();
 		this.port = 8001;

@@ -49,6 +49,7 @@ export class UserController extends BaseController implements IUserController {
 		// this.send(res, 200, user);
 
 		const result = await this.userService.createUser(body);
+
 		if (!result) {
 			return next(new HTTPError(422, 'Такой пользователь уже существует'));
 		}

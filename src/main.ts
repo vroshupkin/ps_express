@@ -14,6 +14,8 @@ import 'reflect-metadata';
 import { IUserController } from './users/users.controller.interface.js';
 import { IUserService } from './users/users.service.interface.js';
 import { UserService } from './users/users.service.js';
+import { IConfigService } from './config/config.service.interface.js';
+import { ConfigService } from './config/config.service.js';
 
 /*  */
 export const appBindings_1 = new ContainerModule((bind: interfaces.Bind) => {
@@ -22,6 +24,7 @@ export const appBindings_1 = new ContainerModule((bind: interfaces.Bind) => {
 	bind<IUserController>(TYPES.UserController).to(UserController);
 	bind<IUserService>(TYPES.UserService).to(UserService);
 	bind<App>(TYPES.Application).to(App);
+	bind<IConfigService>(TYPES.ConfigService).to(ConfigService).inSingletonScope();
 });
 
 interface IBootstrap {
