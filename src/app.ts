@@ -13,6 +13,7 @@ import { ConfigService } from './config/config.service.js';
 import { IConfigService } from './config/config.service.interface.js';
 import { IUserController } from './users/users.controller.interface.js';
 import { IExeptionFilter } from './errors/exeption.filter.interface.js';
+import { PrismaService } from './database/prisma.service.js';
 const { json } = express;
 
 @injectable()
@@ -30,6 +31,7 @@ export class App {
 		@inject(TYPES.ExeptionFilter) private exeptionFilter: IExeptionFilter,
 		@inject(TYPES.UserController) private userController: IUserController,
 		@inject(TYPES.ConfigService) private configService: IConfigService,
+		@inject(TYPES.PrismaService) private prismaService: PrismaService,
 	) {
 		this.app = express();
 		this.port = 8001;
@@ -60,6 +62,7 @@ export class App {
 		this.server = this.app.listen(this.port);
 		console.log(`Сервер запущен localhost:${this.port}`);
 
+		await this.prismaService.connect();
 		// this.app.use('/users', this.userController.router)
 		this.logger.log(`Сервер запущен localhost:${this.port}`);
 	}
