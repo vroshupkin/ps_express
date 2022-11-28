@@ -71,14 +71,51 @@ const remainCourseTime = PurpleSchool_NodeJS.remainTimeOfCourses(current_step);
 
 printProgress(current_step, current_video);
 console.log('Оставшееся время курсов ' + remainCourseTime);
-const progress_debug = [9.54, 10.37, 12.46, 5.59].reduce(
-	(prev, curr) => Minute.add(prev, curr),
-	new Minute(0),
-);
-console.log(progress_debug + '');
+const progress_debug = [16.06, 21.05].reduce((prev, curr) => Minute.add(prev, curr), new Minute(0));
+console.log('время: ' + progress_debug);
 
 const rest_course = [12.47, 67.36, 42.12, 61.28, 4.3].reduce(
 	(prev, curr) => Minute.add(prev, curr),
 	new Minute(0),
 );
 console.log(Number(rest_course + ''));
+
+// TODO test 16.06 + 21.05 минут, не верный результат
+
+interface WeekDaysEnumarate {
+	start: Date;
+	days: {
+		1: number[];
+		2: number[];
+		3: number[];
+		4: number[];
+		5: number[];
+		6: number[];
+		7: number[];
+	};
+}
+
+const week: WeekDaysEnumarate = {
+	start: new Date('2022-11-21'),
+	days: {
+		1: [],
+		2: [],
+		3: [29.26],
+		4: [39.16],
+		5: [12.47],
+		6: [17.23],
+		7: [37.11],
+	},
+};
+
+// class WeekEntity{
+
+// }
+
+let sum = new Minute(0);
+for (const v of Object.values(week.days)) {
+	if (!Array.isArray(v)) continue;
+	if (v.length > 0) sum = Minute.add(sum, v[0]);
+}
+
+// console.log('Суммарное время за неделю', sum + '');
