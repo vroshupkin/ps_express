@@ -6,7 +6,8 @@ import { UserRegisterDto } from './dto/user-register.dto';
 import { User } from './user.entity';
 import { IUserRepository } from './users.repository.interface';
 import { IUserService } from './users.service.interface';
-
+import bcrypt from 'bcryptjs';
+import { C } from '../education/reflect';
 @injectable()
 export class UserService implements IUserService {
 	constructor(
@@ -15,7 +16,14 @@ export class UserService implements IUserService {
 	) {}
 
 	async validateUser({ email, name, password }: UserRegisterDto): Promise<boolean> {
-		return true;
+		const userInRepository = await this.usersRepository.find(email);
+		if (!userInRepository) {
+			return false;
+		}
+		const newUser = new User(email, name, userInRepository.password);
+		const result = await newUser.comparePassword(password);
+
+		return result;
 	}
 
 	async createUser({ email, name, password }: UserRegisterDto): Promise<UserModel | null> {
@@ -24,6 +32,8 @@ export class UserService implements IUserService {
 
 		await user.setPasword(password, Number(salt));
 		const existedUser = await this.usersRepository.find(email);
+		console.log(existedUser);
+
 		if (existedUser) {
 			return null;
 		}
