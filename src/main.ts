@@ -2,7 +2,7 @@ import { App } from './app.js';
 import { Container, ContainerModule, interfaces } from 'inversify';
 import { printProgress, PurpleSchool_NodeJS } from './services/course_helper.js';
 import { LoggerSevice } from './logger/logger.service.js';
-import { Minute } from './common/time.js';
+import { Minute, sumMinutes } from './common/time.js';
 import { application } from 'express';
 import { UserController } from './users/users.controller.js';
 import { ExeptionFilter } from './errors/exeption.filter.js';
@@ -65,19 +65,27 @@ export const { app, appContainer } = bootstrap();
 
 // export { app, appContainer }
 
-const current_step = 14;
-const current_video = 2;
+// function sumMinutes(arr: Minute[] | number[]): Minute {
+// 	return arr
+// 		.map((v) => new Minute(v))
+// 		.reduce((prev, next) => Minute.add(prev, next), new Minute(0));
+// }
+
+const current_step = 16;
+const current_video = 3;
 const remainCourseTime = PurpleSchool_NodeJS.remainTimeOfCourses(current_step);
 
 printProgress(current_step, current_video);
 console.log('Оставшееся время курсов ' + remainCourseTime);
-const progress_debug = [16.06, 21.05].reduce((prev, curr) => Minute.add(prev, curr), new Minute(0));
+const progress_debug = sumMinutes([16.06, 21.05]);
 console.log('время: ' + progress_debug);
 
-const rest_course = [12.47, 67.36, 42.12, 61.28, 4.3].reduce(
-	(prev, curr) => Minute.add(prev, curr),
-	new Minute(0),
-);
+// const rest_course = [12.47, 67.36, 42.12, 61.28, 4.3].reduce(
+// 	(prev, curr) => Minute.add(prev, curr),
+// 	new Minute(0),
+// );
+const rest_course = sumMinutes([12.47, 67.36, 42.12, 61.28, 4.3]);
+
 console.log(Number(rest_course + ''));
 
 // TODO test 16.06 + 21.05 минут, не верный результат
@@ -85,17 +93,17 @@ console.log(Number(rest_course + ''));
 interface WeekDaysEnumarate {
 	start: Date;
 	days: {
-		1: number[];
-		2: number[];
-		3: number[];
-		4: number[];
-		5: number[];
-		6: number[];
-		7: number[];
+		1: number[] | Minute[];
+		2: number[] | Minute[];
+		3: number[] | Minute[];
+		4: number[] | Minute[];
+		5: number[] | Minute[];
+		6: number[] | Minute[];
+		7: number[] | Minute[];
 	};
 }
 
-const week: WeekDaysEnumarate = {
+const week_1: WeekDaysEnumarate = {
 	start: new Date('2022-11-21'),
 	days: {
 		1: [],
@@ -108,14 +116,27 @@ const week: WeekDaysEnumarate = {
 	},
 };
 
+console.log('sum minutes:', sumMinutes([13.02, 5.5, 11.57]) + '');
+
+const week_2: WeekDaysEnumarate = {
+	start: new Date('2022-11-28'),
+	days: {
+		1: [sumMinutes([13.02, 5.5, 11.57])],
+		2: [],
+		3: [],
+		4: [],
+		5: [],
+		6: [],
+		7: [],
+	},
+};
 // class WeekEntity{
 
 // }
 
 let sum = new Minute(0);
-for (const v of Object.values(week.days)) {
-	if (!Array.isArray(v)) continue;
-	if (v.length > 0) sum = Minute.add(sum, v[0]);
+for (const v of Object.values(week_1.days)) {
+	sum = Minute.add(sum, sumMinutes(v));
 }
 
-// console.log('Суммарное время за неделю', sum + '');
+console.log('Суммарное время за неделю', sum + '');

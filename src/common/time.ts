@@ -45,26 +45,41 @@ export class Minute {
 		const min = a.min + b.min + Math.floor((a.sec + b.sec) / 60);
 		const sec = (a.sec + b.sec) % 60;
 
+		if (sec < 10) {
+			return new Minute(`${min}.0${sec}`);
+		}
 		return new Minute(`${min}.${sec}`);
 	}
 
 	toString(): string {
-		return `${this.#min}.${this.#sec}`;
+		return this.#sec < 10 ? `${this.#min}.0${this.#sec}` : `${this.#min}.${this.#sec}`;
 	}
+}
+
+export function sumMinutes(arr: Minute[] | number[]): Minute {
+	return arr
+		.map((v) => new Minute(v))
+		.reduce((prev, next) => Minute.add(prev, next), new Minute(0));
 }
 
 function test(): any {
-	const t_2 = Minute.add(70.59, -0.59);
+	// const t_2 = Minute.add(70.59, -0.59);
 
-	console.log(new Minute(0) + '');
-	for (const decade of [0, 1, 2, 3, 4, 5]) {
-		for (const digit of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]) {
-			const minute_str = `${decade}${digit}`;
-			// console.log(new Minute(minute_str) + '')
-			// console.log(new Minute('-' + minute_str) + '')
-		}
-	}
+	// console.log(new Minute(0) + '');
+	// for (const decade of [0, 1, 2, 3, 4, 5]) {
+	// 	for (const digit of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]) {
+	// 		const minute_str = `${decade}${digit}`;
+	// 		// console.log(new Minute(minute_str) + '')
+	// 		// console.log(new Minute('-' + minute_str) + '')
+	// 	}
+	// }
 
-	// console.log(new Minute('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'))
-	// console.log(t_2 + '')
+	const input = [13.02, 13.2, 0, 0.1, 0.01];
+	const output = input.map((v) => `${new Minute(v)}`);
+	const expect = ['13.02', '13.20', '0.00', '0.10', '0.01'];
+
+	console.log(output);
+	console.log(expect);
 }
+
+// test();
