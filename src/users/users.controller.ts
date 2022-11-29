@@ -16,6 +16,9 @@ import { ValidateMiddleware } from '../common/validate.middleware';
 import jsonwebtoken from 'jsonwebtoken';
 const { sign } = jsonwebtoken;
 import { IConfigService } from '../config/config.service.interface';
+import { GuardMiddleware } from '../common/guard.middleware';
+import { UsersRepository } from './users.repository';
+import { IUserRepository } from './users.repository.interface';
 
 @injectable()
 export class UserController extends BaseController implements IUserController {
@@ -43,7 +46,7 @@ export class UserController extends BaseController implements IUserController {
 				func: this.info,
 				method: 'get',
 				path: '/info',
-				middlewares: [],
+				middlewares: [new GuardMiddleware()],
 			},
 		]);
 	}
@@ -99,11 +102,16 @@ export class UserController extends BaseController implements IUserController {
 		});
 	}
 
-	public info(
+	public async info(
 		{ user }: Request<{}, {}, UserRegisterDto>,
 		res: Response,
 		next: NextFunction,
-	): void {
-		this.ok(res, { email: user });
+	): Promise<void> {
+		const userRepos = await this.userService.getUserInfo(user);
+		if (userRepos) {
+			this.ok(res, { email: user, id: userRepos.id });
+		} else {
+			this.ok(res, { email: user });
+		}
 	}
 }

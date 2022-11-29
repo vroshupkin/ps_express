@@ -10,6 +10,9 @@ import { IMiddleware } from './middleware.interface';
 export class AuthMiddleware implements IMiddleware {
 	constructor(private secret: string) {}
 
+	/**
+	 * Насыщает реквест емейлом
+	 */
 	execute(req: Request, res: Response, next: NextFunction): void {
 		if (req.headers.authorization) {
 			const token = req.headers.authorization.split(' ')[1];
@@ -18,10 +21,11 @@ export class AuthMiddleware implements IMiddleware {
 					return next();
 				} else if (payload && typeof payload != 'string') {
 					req.user = payload.email;
-					next();
+					return next();
 				}
 			});
+		} else {
+			next();
 		}
-		next();
 	}
 }
