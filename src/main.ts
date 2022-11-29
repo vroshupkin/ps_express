@@ -135,7 +135,7 @@ const week_2: WeekDaysEnumarate = {
 // }
 
 let sum = new Minute(0);
-for (const v of Object.values(week_1.days)) {
+for (const v of Object.values(week_2.days)) {
 	sum = Minute.add(sum, sumMinutes(v));
 }
 
