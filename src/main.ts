@@ -20,6 +20,7 @@ import { PrismaService } from './database/prisma.service.js';
 import { IUserRepository } from './users/users.repository.interface.js';
 import { UsersRepository } from './users/users.repository.js';
 
+import { Logger, LoggerInfo, LoggerInfoObject } from './common/logger/logger.js';
 /*  */
 export const appBindings_1 = new ContainerModule((bind: interfaces.Bind) => {
 	bind<ILogger>(TYPES.ILogger).to(LoggerSevice);
@@ -31,6 +32,9 @@ export const appBindings_1 = new ContainerModule((bind: interfaces.Bind) => {
 	bind<PrismaService>(TYPES.PrismaService).to(PrismaService).inSingletonScope();
 	bind<IUserRepository>(TYPES.UsersRepository).to(UsersRepository).inSingletonScope();
 });
+
+const logger = new Logger();
+// logger.onHeader(false);
 
 interface IBootstrap {
 	appContainer: Container;
@@ -47,38 +51,20 @@ function bootstrap(): IBootstrap {
 }
 
 export const { app, appContainer } = bootstrap();
-// const logger = new LoggerSevice()
-// const app = new App(
-//     logger,
-//     new ExeptionFilter(logger)
-// );
-// app.addController(new UserController(logger), '/users')
 
-// const appContainer = new Container()
-// appContainer.bind<ILogger>(TYPES.ILogger).to(LoggerSevice)
-// appContainer.bind<IExeptionFilter>(TYPES.ExeptionFilter).to(ExeptionFilter)
-// appContainer.bind<UserController>(TYPES.UserController).to(UserController)
-// appContainer.bind<App>(TYPES.Application).to(App)
-
-// const app = appContainer.get<App>(TYPES.Application)
-// app.init();
-
-// export { app, appContainer }
-
-// function sumMinutes(arr: Minute[] | number[]): Minute {
-// 	return arr
-// 		.map((v) => new Minute(v))
-// 		.reduce((prev, next) => Minute.add(prev, next), new Minute(0));
-// }
-
-const current_step = 16;
+const current_step = 17;
 const current_video = 3;
 const remainCourseTime = PurpleSchool_NodeJS.remainTimeOfCourses(current_step);
 
 printProgress(current_step, current_video);
-console.log('Оставшееся время курсов ' + remainCourseTime);
+
 const progress_debug = sumMinutes([16.06, 21.05]);
-console.log('время: ' + progress_debug);
+logger.onHeader(false);
+logger.printHeader();
+
+logger.log('Оставшееся время курсов ' + remainCourseTime);
+logger.log('время: ' + progress_debug);
+logger.onHeader(true);
 
 // const rest_course = [12.47, 67.36, 42.12, 61.28, 4.3].reduce(
 // 	(prev, curr) => Minute.add(prev, curr),
@@ -86,7 +72,7 @@ console.log('время: ' + progress_debug);
 // );
 const rest_course = sumMinutes([12.47, 67.36, 42.12, 61.28, 4.3]);
 
-console.log(Number(rest_course + ''));
+logger.log(Number(rest_course + ''));
 
 // TODO test 16.06 + 21.05 минут, не верный результат
 
@@ -116,13 +102,13 @@ const week_1: WeekDaysEnumarate = {
 	},
 };
 
-console.log('sum minutes:', sumMinutes([13.02, 5.5, 11.57]) + '');
+logger.log('sum minutes:', sumMinutes([13.02, 5.5, 11.57]) + '');
 
 const week_2: WeekDaysEnumarate = {
 	start: new Date('2022-11-28'),
 	days: {
 		1: [sumMinutes([13.02, 5.5, 11.57])],
-		2: [],
+		2: [sumMinutes([14.32, 9.53])],
 		3: [],
 		4: [],
 		5: [],
@@ -139,4 +125,4 @@ for (const v of Object.values(week_2.days)) {
 	sum = Minute.add(sum, sumMinutes(v));
 }
 
-console.log('Суммарное время за неделю', sum + '');
+logger.log('Суммарное время за неделю', sum + '');
