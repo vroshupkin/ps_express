@@ -16,7 +16,7 @@ import { ValidateMiddleware } from '../common/validate.middleware';
 import jsonwebtoken from 'jsonwebtoken';
 const { sign } = jsonwebtoken;
 import { IConfigService } from '../config/config.service.interface';
-import { GuardMiddleware } from '../common/guard.middleware';
+import { AuthGuard } from '../common/auth.guard';
 import { UsersRepository } from './users.repository';
 import { IUserRepository } from './users.repository.interface';
 
@@ -46,7 +46,7 @@ export class UserController extends BaseController implements IUserController {
 				func: this.info,
 				method: 'get',
 				path: '/info',
-				middlewares: [new GuardMiddleware()],
+				middlewares: [new AuthGuard()],
 			},
 		]);
 	}

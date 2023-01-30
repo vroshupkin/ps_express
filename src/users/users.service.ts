@@ -40,4 +40,8 @@ export class UserService implements IUserService {
 
 		return this.usersRepository.create(user);
 	}
+
+	async getUserInfo(email: string): Promise<any> {
+		return this.usersRepository.find(email);
+	}
 }

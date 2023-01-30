@@ -14,7 +14,8 @@ import { IConfigService } from './config/config.service.interface.js';
 import { IUserController } from './users/users.controller.interface.js';
 import { IExeptionFilter } from './errors/exeption.filter.interface.js';
 import { PrismaService } from './database/prisma.service.js';
-import { AuthMiddleware } from './common/auth.guard.js';
+import { AuthGuard } from './common/auth.guard.js';
+import { AuthMiddleware } from './common/auth.middleware.js';
 const { json } = express;
 
 @injectable()

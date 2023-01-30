@@ -74,7 +74,7 @@ const rest_course = sumMinutes([12.47, 67.36, 42.12, 61.28, 4.3]);
 
 logger.log(Number(rest_course + ''));
 
-// TODO test 16.06 + 21.05 минут, не верный результат
+// TODO test 16.06 + 21.05 минут, неверный результат
 
 interface WeekDaysEnumarate {
 	start: Date;
