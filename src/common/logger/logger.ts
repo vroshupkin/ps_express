@@ -1,6 +1,7 @@
 import path from 'path';
 import { C } from '../../education/reflect';
 import chalk from 'chalk';
+import { ISettings } from 'tslog/dist/nodejs/interfaces';
 interface ILoggerInfoObject {
 	columnAndLine: string;
 	functionName: string;
@@ -118,22 +119,22 @@ export class LoggerInfo {
 
 const loggerDefaultSetting: ILoggerSettings = {
 	order: {
-		color: 'bgYellow',
 		on: true,
+		color: 'bgYellow',
 		order: 1,
 	},
 	time: {
-		color: 'blueBright',
 		on: true,
+		color: 'blueBright',
 	},
 	path: {
+		on: true,
 		color: 'yellow',
 		type: 'relative',
-		on: true,
 	},
 	functionName: {
-		color: 'greenBright',
 		on: true,
+		color: 'greenBright',
 	},
 };
 
@@ -147,29 +148,29 @@ class LoggerSetting {
 		}
 	}
 
-	get time(): ISettingsTime {
+	get time(): ILoggerSettings['time'] {
 		return this.setting.time;
 	}
-	set time(time: ISettingsTime) {
+	set time(time: ILoggerSettings['time']) {
 		this.setting.time = time;
 	}
 
-	get order(): ISettingsOrder {
+	get order(): ILoggerSettings['order'] {
 		return this.setting.order;
 	}
-	set order(order: ISettingsOrder) {
+	set order(order: ILoggerSettings['order']) {
 		this.setting.order = order;
 	}
 
-	get path(): ISettingsPath {
+	get path(): ILoggerSettings['path'] {
 		return this.setting.path;
 	}
 
-	set path(path: ISettingsPath) {
+	set path(path: ILoggerSettings['path']) {
 		this.setting.path = path;
 	}
 
-	get functionName(): ISettingsFunctionName {
+	get functionName(): ILoggerSettings['functionName'] {
 		return this.setting.functionName;
 	}
 
@@ -213,6 +214,7 @@ type TChalkColors =
 	| 'bgCyanBright'
 	| 'bgWhiteBright';
 
+// Получает имя функции в который вызывается
 class FunctionName implements LoggerObject {
 	constructor(private settings: ISettingsFunctionName, private loggerInfo: LoggerInfo) {}
 
@@ -259,7 +261,8 @@ export class Logger {
 	get header(): string {
 		const loggerInfo = new LoggerInfo(new Error());
 
-		const orderObject = new Order(this.settings.order);
+		const orderObject = new Order(this.settings);
+
 		const timeObj = new Time(this.settings.time);
 		const pathObj = new Path(loggerInfo, this.settings.path);
 		const functionNameObj = new FunctionName(this.settings.functionName, loggerInfo);
@@ -272,11 +275,11 @@ export class Logger {
 }
 
 class Time {
-	constructor(private settingsTime: ISettingsTime) {}
+	constructor(private setting: ILoggerSettings['time']) {}
 
 	public toString(): string {
 		let timeStr = this.getTimeNow();
-		const color = this.settingsTime.color;
+		const color = this.setting.color;
 		if (color) {
 			timeStr = Chalk.toColor(timeStr, color);
 		}
@@ -293,44 +296,67 @@ class Time {
 }
 
 class Order {
-	_order = 0;
+	private setting: ILoggerSettings['order'];
 
-	constructor(private setting: ISettingsOrder) {
-		this._order = setting.order;
+	constructor(setting: ILoggerSettings) {
+		this.setting = setting.order;
 	}
 
 	get order(): number {
-		return this._order;
+		return this.setting.order;
 	}
 
 	set order(val: number) {
-		this._order = val;
+		this.setting.order = val;
 	}
 
 	public toString(): string {
 		if (!this.setting.on) return '';
 
 		const color = this.setting.color;
-		if (!color) return this._order + '';
+		if (!color) return this.setting.order + '';
 
-		return Chalk.toColor(' ' + this._order + ' ', color);
+		return Chalk.toColor(' ' + this.setting.order + ' ', color);
 	}
 }
 
 interface ILoggerSettings {
-	order: ISettingsOrder;
-	time: ISettingsTime;
-	path: ISettingsPath;
-	functionName: ISettingsFunctionName;
+	order: {
+		on: boolean;
+		color?: TChalkColors;
+		order: number;
+	};
+	time: {
+		on: boolean;
+		color?: TChalkColors;
+		timeFormat?: 'string';
+	};
+	path: {
+		on: boolean;
+		color?: TChalkColors;
+		type: 'relative' | 'absolute';
+	};
+	functionName: {
+		on: boolean;
+		color?: TChalkColors;
+		withoutBracket?: boolean;
+	};
+	// headerName: {
+	// 	name: string;
+	// };
 }
 
 interface ISettingItemBase {
 	on: boolean;
 	color?: TChalkColors;
 }
-interface ISettingsOrder extends ISettingItemBase {
-	order: number;
-}
+
+// interface ISettingItemColor
+// interface ISettingsOrder extends ISettingItemBase {
+// 	on: boolean;
+// 	color?: TChalkColors;
+// 	order: number;
+// }
 
 interface ISettingsTime extends ISettingItemBase {
 	timeFormat?: 'string';

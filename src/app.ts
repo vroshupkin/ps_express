@@ -1,7 +1,7 @@
 import express, { Express } from 'express';
 // import { userRouter } from "./users/users";
 import { Server } from 'node:http';
-import { LoggerSevice as ILogger } from './logger/logger.service.js';
+// import { LoggerSevice as ILogger } from './logger/logger.service.js';
 import { UserController } from './users/users.controller.js';
 import { BaseController } from './common/base.controller.js';
 import { ExeptionFilter } from './errors/exeption.filter.js';
@@ -23,13 +23,9 @@ export class App {
 	app: Express;
 	server: Server;
 	port: number;
-	// logger: ILogger
-	// userController: BaseController
-	// controllers: BaseController[]
-	// exeptionFilter: ExeptionFilter
 
 	constructor(
-		@inject(TYPES.ILogger) private logger: ILogger,
+		// @inject(TYPES.ILogger) private logger: ILogger,
 		@inject(TYPES.ExeptionFilter) private exeptionFilter: IExeptionFilter,
 		@inject(TYPES.UserController) private userController: IUserController,
 		@inject(TYPES.ConfigService) private configService: IConfigService,
@@ -37,13 +33,6 @@ export class App {
 	) {
 		this.app = express();
 		this.port = 8001;
-
-		// this.logger = logger
-
-		// this.userController = new UserController(new LoggerSevice())
-		// this.exeptionFilter = exeptionFilter
-		// this.controllers = []
-		// this.userController = userController
 	}
 
 	useMiddleware(): void {
@@ -53,7 +42,6 @@ export class App {
 	}
 
 	useRoutes(): void {
-		// this.app.use('/users', userRouter)
 		this.app.use('/users', this.userController.router);
 	}
 
@@ -64,23 +52,11 @@ export class App {
 		this.useExceptionFilters();
 
 		this.server = this.app.listen(this.port);
-		console.log(`Сервер запущен localhost:${this.port}`);
 
 		await this.prismaService.connect();
-		// this.app.use('/users', this.userController.router)
-		this.logger.log(`Сервер запущен localhost:${this.port}`);
+
+		console.log(`Сервер запущен localhost:${this.port}`);
 	}
-
-	// addController(pass_controller: BaseController | BaseController[], route_path: string){
-	//     if(!Array.isArray(pass_controller)){
-	//         pass_controller = [pass_controller]
-	//     }
-
-	//     for (const contoller of pass_controller) {
-	//         this.controllers.push(contoller)
-	//         this.app.use(route_path, contoller.router)
-	//     }
-	// }
 
 	removeController(): void {
 		console.error('TODO!!!');
