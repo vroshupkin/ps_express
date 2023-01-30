@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from 'express';
 import { BaseController } from '../common/base.controller';
 import { IControllerRoute } from '../common/route.interface';
 import { HTTPError } from '../errors/http-error.class';
-import { LoggerSevice } from '../logger/logger.service';
 import { inject, injectable } from 'inversify';
 import { TYPES } from '../types';
 import { ILogger } from '../logger/logger.interface';

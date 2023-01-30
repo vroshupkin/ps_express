@@ -20,7 +20,7 @@ import { PrismaService } from './database/prisma.service.js';
 import { IUserRepository } from './users/users.repository.interface.js';
 import { UsersRepository } from './users/users.repository.js';
 
-import { Logger, LoggerInfo, LoggerInfoObject } from './common/logger/logger.js';
+import { Logger } from './common/logger/logger.js';
 /*  */
 export const appBindings_1 = new ContainerModule((bind: interfaces.Bind) => {
 	bind<ILogger>(TYPES.ILogger).to(LoggerSevice);

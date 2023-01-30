@@ -1,7 +1,7 @@
 import express, { Express } from 'express';
 // import { userRouter } from "./users/users";
 import { Server } from 'node:http';
-// import { LoggerSevice as ILogger } from './logger/logger.service.js';
+
 import { UserController } from './users/users.controller.js';
 import { BaseController } from './common/base.controller.js';
 import { ExeptionFilter } from './errors/exeption.filter.js';

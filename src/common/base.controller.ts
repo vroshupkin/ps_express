@@ -44,6 +44,7 @@ export abstract class BaseController {
 		}
 
 		this.logger.log('Создан контроллер с путями:');
-		console.log(log_str);
+		this.logger.error('Настройка error логгера');
+		this.logger.warn('Настройка warn логгера');
 	}
 }

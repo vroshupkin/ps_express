@@ -1,7 +1,7 @@
 import path from 'path';
 import { C } from '../../education/reflect';
 import chalk from 'chalk';
-import { ISettings } from 'tslog/dist/nodejs/interfaces';
+
 interface ILoggerInfoObject {
 	columnAndLine: string;
 	functionName: string;
@@ -13,21 +13,17 @@ interface ILoggerInfoObject {
  * Собирает _loggerInfoObject из ошибки. Сделан для возможтости логирование место и функции лога
  */
 export class LoggerInfoObject {
-	private _loggerInfoObject: ILoggerInfoObject;
-	constructor(err: Error) {
+	public loggerInfoObject: ILoggerInfoObject;
+	constructor(err: Error, private stackDepth: number) {
 		const stackString = this.getStackString(err);
 		if (!stackString) return;
 
-		this._loggerInfoObject = {
+		this.loggerInfoObject = {
 			columnAndLine: this.getColumnAndLine(stackString),
 			functionName: this.getFunctionName(stackString),
 			absolutePath: this.getAbsolutePath(stackString),
 			relativePath: this.getRelativePath(stackString),
 		};
-	}
-
-	get loggerInfoObject(): ILoggerInfoObject {
-		return this._loggerInfoObject;
 	}
 
 	private getRelativePath(str: string): string {
@@ -93,23 +89,15 @@ export class LoggerInfoObject {
 
 	private getStackString(err: Error): string | undefined {
 		if (err.stack) {
-			return err.stack.split('\n')[3];
+			return err.stack.split('\n')[this.stackDepth];
 		}
-	}
-}
-
-export class LoggerInfo {
-	private loggerInfoObject: ILoggerInfoObject;
-	constructor(err: Error) {
-		this.loggerInfoObject = new LoggerInfoObject(err).loggerInfoObject;
-	}
-
-	get relativePath(): string {
-		return this.loggerInfoObject.relativePath;
 	}
 
 	get absolutePath(): string {
 		return this.loggerInfoObject.absolutePath;
+	}
+	get relativePath(): string {
+		return this.loggerInfoObject.relativePath;
 	}
 
 	get functionName(): string {
@@ -117,7 +105,7 @@ export class LoggerInfo {
 	}
 }
 
-const loggerDefaultSetting: ILoggerSettings = {
+export const loggerDefaultSetting: ISettings = {
 	order: {
 		on: true,
 		color: 'bgYellow',
@@ -131,53 +119,18 @@ const loggerDefaultSetting: ILoggerSettings = {
 		on: true,
 		color: 'yellow',
 		type: 'relative',
+		stackDepth: 3,
 	},
 	functionName: {
 		on: true,
 		color: 'greenBright',
 	},
+	headerName: {
+		name: 'INFO',
+		on: true,
+		color: 'cyan',
+	},
 };
-
-class LoggerSetting {
-	private setting: ILoggerSettings;
-	constructor(settings?: ILoggerSettings) {
-		if (settings) {
-			this.setting = settings;
-		} else {
-			this.setting = loggerDefaultSetting;
-		}
-	}
-
-	get time(): ILoggerSettings['time'] {
-		return this.setting.time;
-	}
-	set time(time: ILoggerSettings['time']) {
-		this.setting.time = time;
-	}
-
-	get order(): ILoggerSettings['order'] {
-		return this.setting.order;
-	}
-	set order(order: ILoggerSettings['order']) {
-		this.setting.order = order;
-	}
-
-	get path(): ILoggerSettings['path'] {
-		return this.setting.path;
-	}
-
-	set path(path: ILoggerSettings['path']) {
-		this.setting.path = path;
-	}
-
-	get functionName(): ILoggerSettings['functionName'] {
-		return this.setting.functionName;
-	}
-
-	set functionName(settings: ISettingsFunctionName) {
-		this.setting.functionName = settings;
-	}
-}
 
 type TChalkColors =
 	| 'black'
@@ -216,38 +169,55 @@ type TChalkColors =
 
 // Получает имя функции в который вызывается
 class FunctionName implements LoggerObject {
-	constructor(private settings: ISettingsFunctionName, private loggerInfo: LoggerInfo) {}
+	constructor(private setting: ISettings['functionName'], private loggerInfo: LoggerInfoObject) {}
 
 	toString(): string {
-		let out = this.loggerInfo.functionName;
-		const color = this.settings.color;
+		if (!this.setting?.on) return '';
+
+		const [functionName, color] = [this.loggerInfo.functionName, this.setting.color];
+
 		if (color) {
-			out = Chalk.toColor(out + '()', color);
+			return Chalk.toColor(`${functionName}()`, color);
 		}
-		return out;
+		return functionName;
+	}
+}
+
+class HeaderName implements LoggerObject {
+	constructor(private setting: ISettings['headerName']) {}
+
+	toString(): string {
+		if (!this.setting?.on) return '';
+
+		const [name, color] = [this.setting.name, this.setting.color];
+
+		if (color) {
+			return Chalk.toColor(name, color);
+		} else {
+			return name;
+		}
 	}
 }
 
 export class Logger {
-	private settings: LoggerSetting;
+	private settings: ISettings;
 	private headersOn: boolean;
 
-	constructor(settings?: ILoggerSettings) {
-		if (settings) {
-			this.settings = new LoggerSetting(settings);
+	constructor(settings?: ISettings) {
+		if (settings === undefined) {
+			this.settings = JSON.parse(JSON.stringify(loggerDefaultSetting)) as ISettings;
 		} else {
-			this.settings = new LoggerSetting();
+			this.settings = settings;
 		}
 
 		this.headersOn = true;
 	}
 
 	log(...data: any[]): void {
-		console.log(...data);
-
 		if (this.headersOn) {
 			console.log(this.header);
 		}
+		console.log(...data);
 	}
 
 	onHeader(bool: boolean): void {
@@ -259,7 +229,7 @@ export class Logger {
 	}
 
 	get header(): string {
-		const loggerInfo = new LoggerInfo(new Error());
+		const loggerInfo = new LoggerInfoObject(new Error(), this.settings['path']['stackDepth']);
 
 		const orderObject = new Order(this.settings);
 
@@ -267,15 +237,14 @@ export class Logger {
 		const pathObj = new Path(loggerInfo, this.settings.path);
 		const functionNameObj = new FunctionName(this.settings.functionName, loggerInfo);
 
-		let type = 'INFO';
-		type = chalk.cyan(type);
+		const headerName = new HeaderName(this.settings.headerName);
 
-		return `${orderObject} ${type} ${timeObj} ${pathObj}`;
+		return `${orderObject} ${headerName} ${timeObj} ${pathObj}`;
 	}
 }
 
 class Time {
-	constructor(private setting: ILoggerSettings['time']) {}
+	constructor(private setting: ISettings['time']) {}
 
 	public toString(): string {
 		let timeStr = this.getTimeNow();
@@ -296,9 +265,9 @@ class Time {
 }
 
 class Order {
-	private setting: ILoggerSettings['order'];
+	private setting: ISettings['order'];
 
-	constructor(setting: ILoggerSettings) {
+	constructor(setting: ISettings) {
 		this.setting = setting.order;
 	}
 
@@ -320,7 +289,7 @@ class Order {
 	}
 }
 
-interface ILoggerSettings {
+export interface ISettings {
 	order: {
 		on: boolean;
 		color?: TChalkColors;
@@ -335,38 +304,18 @@ interface ILoggerSettings {
 		on: boolean;
 		color?: TChalkColors;
 		type: 'relative' | 'absolute';
+		stackDepth: number;
 	};
 	functionName: {
 		on: boolean;
 		color?: TChalkColors;
 		withoutBracket?: boolean;
 	};
-	// headerName: {
-	// 	name: string;
-	// };
-}
-
-interface ISettingItemBase {
-	on: boolean;
-	color?: TChalkColors;
-}
-
-// interface ISettingItemColor
-// interface ISettingsOrder extends ISettingItemBase {
-// 	on: boolean;
-// 	color?: TChalkColors;
-// 	order: number;
-// }
-
-interface ISettingsTime extends ISettingItemBase {
-	timeFormat?: 'string';
-}
-interface ISettingsPath extends ISettingItemBase {
-	type: 'relative' | 'absolute';
-}
-
-interface ISettingsFunctionName extends ISettingItemBase {
-	withoutBracket?: boolean;
+	headerName: {
+		on: boolean;
+		color?: TChalkColors;
+		name: string;
+	};
 }
 
 type TLoggerTokens = 'string' | 'time' | 'functionName';
@@ -425,7 +374,7 @@ class LoggerTokenParser {
 
 class StringConstructor {
 	private str: string;
-	constructor(private loggerTokens: ILoggerToken[], private loggerSettings: ILoggerSettings) {}
+	constructor(private loggerTokens: ILoggerToken[], private loggerSettings: ISettings) {}
 
 	// private constructString() {
 	// 	for (const token of this.loggerTokens) {
@@ -442,7 +391,7 @@ class StringConstructor {
 }
 
 class Path {
-	constructor(private loggerInfo: LoggerInfo, private pathSettings: ISettingsPath) {}
+	constructor(private loggerInfo: LoggerInfoObject, private pathSettings: ISettings['path']) {}
 
 	toString(): string {
 		let out = '';
