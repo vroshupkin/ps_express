@@ -2,6 +2,7 @@ import { Logger, ISettings, loggerDefaultSetting } from '../common/logger/logger
 import { ILogger } from './logger.interface';
 import { injectable } from 'inversify';
 import 'reflect-metadata';
+import { deepCopyObj } from '../common/deep_copy';
 
 type defaultLogObject = {};
 
@@ -12,12 +13,12 @@ export class LoggerSevice implements ILogger {
 	private warnLogger: Logger;
 
 	constructor() {
-		const defaultSetting = JSON.parse(JSON.stringify(loggerDefaultSetting)) as ISettings;
+		const defaultSetting = deepCopyObj(loggerDefaultSetting);
 		defaultSetting['path']['stackDepth'] = 4;
 
 		this.commonLogger = new Logger(defaultSetting);
 
-		const errorLoggerSetting = JSON.parse(JSON.stringify(defaultSetting)) as ISettings;
+		const errorLoggerSetting = deepCopyObj(defaultSetting);
 		errorLoggerSetting.headerName = {
 			name: ' ERROR ',
 			color: 'bgRed',
@@ -27,7 +28,7 @@ export class LoggerSevice implements ILogger {
 		errorLoggerSetting.path.color = 'red';
 		this.errorLogger = new Logger(errorLoggerSetting);
 
-		const warnLoggerSetting = JSON.parse(JSON.stringify(defaultSetting)) as ISettings;
+		const warnLoggerSetting = deepCopyObj(defaultSetting);
 
 		warnLoggerSetting.headerName = {
 			on: true,

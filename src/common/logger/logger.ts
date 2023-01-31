@@ -1,6 +1,7 @@
 import path from 'path';
 import { C } from '../../education/reflect';
 import chalk from 'chalk';
+import { deepCopyObj } from '../deep_copy';
 
 interface ILoggerInfoObject {
 	columnAndLine: string;
@@ -205,7 +206,7 @@ export class Logger {
 
 	constructor(settings?: ISettings) {
 		if (settings === undefined) {
-			this.settings = JSON.parse(JSON.stringify(loggerDefaultSetting)) as ISettings;
+			this.settings = deepCopyObj(loggerDefaultSetting);
 		} else {
 			this.settings = settings;
 		}
